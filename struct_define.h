@@ -7,6 +7,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "nlohmann/single_include/nlohmann/json.hpp"
+using NJson = nlohmann::json;
 
 struct stFTPSConfig{
     std::string ftps_ip;                //*ftps的主机地址
@@ -48,7 +50,7 @@ struct stAlgoInParas{
 };
 
 
-using Points_t = std::string;//std::vector<stPoint<int>>;
+using Points_t = NJson;//std::vector<stPoint<int>>;
 using AlgoHandler_t = bool(*)(stAlgoInParas & );
 struct stSysConfig{
     using Port_t = std::uint16_t;

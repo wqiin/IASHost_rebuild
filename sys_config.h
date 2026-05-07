@@ -34,6 +34,9 @@ protected:
     void read_ftps_config();
     void read_configured_points();
     void read_system_config();
+    void read_allowed_ips();
+
+    void read_port_mapping();
 
 public:
     static const SysConfig & get_inst(){

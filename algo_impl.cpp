@@ -1,5 +1,5 @@
 #include "algo_impl.h"
-
+#include "PatrolLogger.h"
 #include "httplib.h"
 #include "sys_config.h"
 
@@ -17,7 +17,7 @@ namespace ALGO {
             // 2️⃣ 读取文件内容
             std::ifstream ifs(params.image_from_patrol_host, std::ios::binary);
             if (!ifs) {
-                //PLOG_ERROR("open file failed: %s\n", params.strPicPath.c_str());
+                PLOG_ERROR("open file failed\n");
                 return false;
             }
 
@@ -45,12 +45,12 @@ namespace ALGO {
 
             // 5️⃣ 处理返回
             if (!res) {
-                //PLOG_ERROR("httplib request failed\n");
+                PLOG_ERROR("httplib request failed\n");
                 return false;
             }
 
             if (res->status != 200) {
-                //PLOG_ERROR("http status error: %d\n", res->status);
+                PLOG_ERROR("http status error: %d\n", res->status);
                 return false;
             }
 
@@ -59,7 +59,7 @@ namespace ALGO {
             return true;
         }
         catch (const std::exception &e) {
-            //PLOG_ERROR("exception: %s\n", e.what());
+            PLOG_ERROR("exception: %s\n", e.what());
             return false;
         }
 

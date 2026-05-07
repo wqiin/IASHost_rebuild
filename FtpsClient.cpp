@@ -1,5 +1,5 @@
 #include "FtpsClient.h"
-//#include "PatrolLogger.h"
+#include "PatrolLogger.h"
 #include <string>
 #include<sys/stat.h>
 #include<libgen.h>
@@ -25,13 +25,13 @@ bool CFtpsClient::ftps_upFile(const std::string & strPicData, const char * remot
 {
     if (remotepath == NULL || strlen(remotepath) >= 1024)
     {
-        //PLOG_ERROR("Remoteppath is NULL or too long(path::%s)\n", remotepath);
+        PLOG_ERROR("Remoteppath is NULL or too long(path::%s)\n", remotepath);
         return false;
     }
 
     if(strPicData.empty())
     {
-        //PLOG_ERROR("Pic to Send is empty");
+        PLOG_ERROR("Pic to Send is empty");
         return false;
     }
 
@@ -76,33 +76,34 @@ bool CFtpsClient::ftps_upFile(const std::string & strPicData, const char * remot
     else
     {
         m_bisRunning = false;
-        //PLOG_ERROR("CURL is NULL\n");
+        PLOG_ERROR("CURL is NULL\n");
         return false;
     }
 
     if (res == CURLE_OK)
     {
-        //PLOG_INFO("Upload A Mem-File As Remote File:%s Successed", remotepath);
+        PLOG_INFO("Upload A Mem-File As Remote File:%s Successed", remotepath);
         return true;
     }
     else
     {
-        //PLOG_ERROR("Upload A Mem-File As Remote File:%s Failed(res=%d-->%s)", remotepath, res, curl_easy_strerror(res));
+        PLOG_ERROR("Upload A Mem-File As Remote File:%s Failed(res=%d-->%s)", remotepath, res, curl_easy_strerror(res));
         return false;
     }
     return true;
 }
+
 bool CFtpsClient::ftps_upFile(const char * localpath, const char * remotepath)
 {
     if (localpath == NULL || remotepath == NULL)
     {
-        //PLOG_ERROR("Localpath or Remoteppath is NULL\n");
+        PLOG_ERROR("Localpath or Remoteppath is NULL\n");
         return false;
     }
 
     if (strlen(remotepath) >= 1024 || strlen(localpath) >= 1024)
     {
-        //PLOG_ERROR("Too long directory\n");
+        PLOG_ERROR("Too long directory\n");
         return false;
     }
 
@@ -115,7 +116,7 @@ bool CFtpsClient::ftps_upFile(const char * localpath, const char * remotepath)
 
     if (m_pUploadFile == NULL)
     {
-        //PLOG_ERROR("Fopen error\n");
+        PLOG_ERROR("Fopen error\n");
         return false;
     }
 
@@ -163,19 +164,19 @@ bool CFtpsClient::ftps_upFile(const char * localpath, const char * remotepath)
         m_bisRunning = false;
         fclose(m_pUploadFile);
         m_pUploadFile = NULL;
-        //PLOG_ERROR("CURL is NULL\n");
+        PLOG_ERROR("CURL is NULL\n");
         return false;
     }
     m_bisRunning = false;
 
     if (res == 0 || res == CURLE_PARTIAL_FILE)//CURLE_PARTIAL_FILE为server_side error, thus ignoring this error
     {
-        //PLOG_INFO("Upload Local File:%s As Remote File:%s Successed", localpath, remotepath);
+        PLOG_INFO("Upload Local File:%s As Remote File:%s Successed", localpath, remotepath);
         return true;
     }
     else
     {
-        //PLOG_ERROR("Upload Local File:%s As Remote File:%s Failed\n(ret_value::%d)", localpath, remotepath, res);
+        PLOG_ERROR("Upload Local File:%s As Remote File:%s Failed\n(ret_value::%d)", localpath, remotepath, res);
         return false;
     }
 }
@@ -185,13 +186,13 @@ bool CFtpsClient::ftps_downFile(std::string & strData, const char * remotepath)
 {
     if ( remotepath == NULL)
     {
-        //PLOG_ERROR("Localpath or Remoteppath is NULL\n");
+        PLOG_ERROR("Localpath or Remoteppath is NULL\n");
         return false;
     }
 
     if (strlen(remotepath) >= 1024)
     {
-        //PLOG_ERROR("Too long directory\n");
+        PLOG_ERROR("Too long directory\n");
         return false;
     }
 
@@ -233,7 +234,7 @@ bool CFtpsClient::ftps_downFile(std::string & strData, const char * remotepath)
     else
     {
         m_bisRunning = false;
-        //PLOG_ERROR("CURL is NULL\n");
+        PLOG_ERROR("CURL is NULL\n");
         return false;
     }
 
@@ -241,26 +242,27 @@ bool CFtpsClient::ftps_downFile(std::string & strData, const char * remotepath)
 
     if (res == 0 || res == CURLE_PARTIAL_FILE)//CURLE_PARTIAL_FILE为server_side error, thus ignoring this error
     {
-        //PLOG_INFO("Download Remote File:%s Successed", remotepath);
+        PLOG_INFO("Download Remote File:%s Successed", remotepath);
         return true;
     }
     else
     {
-        //PLOG_ERROR("Download Remote File:%s Failed(res = %d)", remotepath, res);
+        PLOG_ERROR("Download Remote File:%s Failed(res = %d)", remotepath, res);
         return false;
     }
 }
+
 bool CFtpsClient::ftps_downFile(const char * localpath, const char * remotepath)
 {
     if (localpath == NULL || remotepath == NULL)
     {
-        //PLOG_ERROR("Localpath or Remoteppath is NULL\n");
+        PLOG_ERROR("Localpath or Remoteppath is NULL\n");
         return false;
     }
 
     if (strlen(remotepath) >= 1024 || strlen(localpath) >= 1024)
     {
-        //PLOG_ERROR("Too long directory\n");
+        PLOG_ERROR("Too long directory\n");
         return false;
     }
 
@@ -278,7 +280,7 @@ bool CFtpsClient::ftps_downFile(const char * localpath, const char * remotepath)
     if (NULL == m_pDownloadFile)
     {
         curl_easy_cleanup(curl);
-        //PLOG_ERROR("Fopen failed\n");
+        PLOG_ERROR("Fopen failed\n");
         return false;
     }
 
@@ -321,7 +323,7 @@ bool CFtpsClient::ftps_downFile(const char * localpath, const char * remotepath)
         m_bisRunning = false;
         fclose(m_pDownloadFile);
         m_pDownloadFile = NULL;
-        //PLOG_ERROR("CURL is NULL\n");
+        PLOG_ERROR("CURL is NULL\n");
         return false;
     }
 
@@ -329,12 +331,12 @@ bool CFtpsClient::ftps_downFile(const char * localpath, const char * remotepath)
 
     if (res == 0)
     {
-        //PLOG_INFO("Download Remote File:%s As Local File:%s Successed", remotepath, localpath);
+        PLOG_INFO("Download Remote File:%s As Local File:%s Successed", remotepath, localpath);
         return true;
     }
     else
     {
-        //PLOG_ERROR("Download Remote File:%s As Local File:%s Failed(res=%d)", remotepath, localpath,res);
+        PLOG_ERROR("Download Remote File:%s As Local File:%s Failed(res=%d)", remotepath, localpath,res);
         return false;
     }
 }
@@ -343,7 +345,7 @@ bool CFtpsClient::ftps_delFile(const char * remotepath)//删除远端给定路�
 {
     if (strlen(remotepath) >= 1024 )
     {
-        //PLOG_ERROR("Too long remotepath\n");
+        PLOG_ERROR("Too long remotepath\n");
         return false;
     }
 
@@ -385,7 +387,7 @@ bool CFtpsClient::ftps_delFile(const char * remotepath)//删除远端给定路�
     }
     else
     {
-        //PLOG_ERROR("CURL is NULL\n");
+        PLOG_ERROR("CURL is NULL\n");
         return false;
     }
 
@@ -393,15 +395,16 @@ bool CFtpsClient::ftps_delFile(const char * remotepath)//删除远端给定路�
 
     if (res == 0)
     {
-        //PLOG_INFO("Delete the File:%s Successed\n", remotepath);
+        PLOG_INFO("Delete the File:%s Successed\n", remotepath);
         return true;
     }
     else
     {
-        //PLOG_ERROR("Delete the File:%s Failed(res = %d)\n", remotepath, res);
+        PLOG_ERROR("Delete the File:%s Failed(res = %d)\n", remotepath, res);
         return false;
     }
 }
+
 void CFtpsClient::CreateDir(const char * path)
 {
   char Path[1024] = {0};
@@ -414,7 +417,7 @@ void CFtpsClient::CreateDir(const char * path)
       if(access(Path, F_OK) == 0) continue;
       else
       {
-    if(mkdir(Path, 0) == -1)	//PLOG_ERROR("mkdir Error");
+    if(mkdir(Path, 0) == -1)	PLOG_ERROR("mkdir Error");
 	chmod(Path, 0777);
       }
     }

@@ -18,10 +18,10 @@
     "ftps_port":"10021",
 
     "?ftps_UserName?":"巡视主机FTPS连接时使用的用户名",
-    "ftps_UserName":"hello",
+    "ftps_username":"hello",
 
     "?ftps_Password?":"巡视主机FTPS连接时用户名对应的密码",
-    "ftps_Password":"515253",
+    "ftps_password":"515253",
 
     "?ftps_remote_file_path?":"图片经过算法主机分析后，将图片上传至巡视主机的路径",
     "ftps_remote_file_path":"/afterRecg",
