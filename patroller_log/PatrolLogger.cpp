@@ -25,7 +25,7 @@
 #include <sys/time.h>
 
 //#define DEFAULT_LOG_DIR  "/home/sunri/patrollogger/"
-#define DEFAULT_LOG_DIR  "/Users/wqiin/patrollogger"
+#define DEFAULT_LOG_DIR  "../patrollogger"
 #define PATH_MAXLEN  512
 #define LOCATION_MAXLEN     512
 #define LOGPREFIX_MAXLEN    128

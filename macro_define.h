@@ -3,7 +3,9 @@
 
 #include <cstdint>
 
-constexpr const char * HTTP_REQUEST_URL = "/picAnalyse";            //算法请求的URL地址
+constexpr const char * HTTP_REQUEST_URL = "/picAnalyse";                        //算法请求的URL地址
+constexpr const char * HTTP_ALGO_UPT_URL = "/algorithmUpdate";                  //算法更新请求URL地址
+constexpr const char * HTTP_ALGO_UPT_RESULT_URL = "/algorithmUpdateResult";     //算法更新结果地址
 
 constexpr std::uint64_t HTTP_REQUEST_BODY_MAX_LENGTH = 10000;       //http的baody最大字节数 - 编译器常量
 constexpr const char * PACK_TYPE = "application/json";              //http报文类型

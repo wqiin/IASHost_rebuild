@@ -1,7 +1,7 @@
 #ifndef HTTP_SERVICE_IMPL_HPP
 #define HTTP_SERVICE_IMPL_HPP
 
-#include <functional>
+
 #include "httplib.h"
 #include "macro_define.h"
 #include "nlohmann/single_include/nlohmann/json.hpp"
@@ -9,10 +9,15 @@
 #include "qthread.hpp"
 #include "FtpsClient.h"
 #include "sys_config.h"
+#include "PatrolLogger.h"
 
 
+#include <functional>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 using NJson = nlohmann::json;
+
 
 namespace HTTP_SERVICE_IMPL
 {
@@ -171,6 +176,53 @@ namespace HTTP_SERVICE_IMPL
 
     //算法更新
     static std::function<void(const httplib::Request &, httplib::Response &)> algo_update = [](const httplib::Request & req, httplib::Response & resp){
+        resp.status = 200;
+
+        auto length = req.get_header_value("Content-Length", "0");
+        auto body_size  = std::stoll(length);
+        if(0 == body_size || HTTP_REQUEST_BODY_MAX_LENGTH > body_size){//非法报文
+            resp.set_content(INVALID_HTTP_PACKAGE, PACK_TYPE);
+            return;
+        }
+
+        //报文类型
+        auto pack_type = req.get_header_value("Content-Type");
+        if(PACK_TYPE != pack_type){
+            resp.set_content(INVALID_HTTP_PACKAGE, PACK_TYPE);
+            return ;
+        }
+
+        stAlgoUptParams upt_params;
+        auto js_body = NJson::parse(req.body);
+        if(js_body.empty()){
+            resp.set_content(INVALID_HTTP_PACKAGE, PACK_TYPE);
+            return ;
+        }
+
+        upt_params.ip = js_body["requestHostIp"];
+        upt_params.port = js_body["requestHostPort"];
+        upt_params.request_id = js_body["requestId"];
+        upt_params.algo_path = js_body["algorithmPath"];
+
+        //异步处理返回结果的请求 - 显示制定忽略返回值
+        std::ignore = std::async(std::launch::async, [upt_params]()->void{
+            CFtpsClient ftpsClt("ip", "port", "username", "password");
+            auto local_algo_upt_path = HTTP_CFG.algo_upt_path + fs::path(upt_params.algo_path).filename().string();
+            auto file_opt_ret = ftpsClt.ftps_downFile(local_algo_upt_path.c_str(), upt_params.algo_path.c_str());
+
+            NJson ret_js;
+            ret_js["requestId"] = upt_params.request_id;
+            ret_js["result"] = std::to_string(file_opt_ret);
+
+            httplib::Client cli(upt_params.ip, upt_params.port);
+            cli.set_connection_timeout(5);    // 可选
+            cli.set_read_timeout(10);
+
+            auto ret = cli.Post(HTTP_ALGO_UPT_RESULT_URL, ret_js.dump(4), PACK_TYPE);
+            if(!ret){
+                PLOG_ERROR("Some errors occured when sent algorithm updated result to target host.");
+            }
+        });
 
     };
 }

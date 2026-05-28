@@ -79,5 +79,14 @@ struct stPatrolParams
 
 
 
+struct stAlgoUptParams{
+    std::string ip;
+    std::uint16_t port;
+    std::string request_id;
+    std::string algo_path;
+};
+
+
+
 
 #endif // STRUCT_DEFINE_H
